@@ -3,3 +3,4 @@ python-dotenv
 psycopg2-binary
 flask_cors
 json2html
+gunicorn
