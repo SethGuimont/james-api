@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <script src="https://demo.htmx.org"></script>
+    <link rel="stylesheet" href="static/css/style.css">
+    <title>Fluffy Cat Pizza</title>
+</head>
+<body>
+<header>
+    <h1>Fluffy Cat Pizza Menu</h1>
+</header>
+{% block content %}
+    <h2>{% block title %} Menu Items {% endblock %}</h2>
+    {% for item in menu_items %}
+        <div class='menu_items'>
+            <h3>#{{ item[1] }}</h3>
+            <p>{{ item [2] }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
+<footer></footer>
+</body>
+</html>
