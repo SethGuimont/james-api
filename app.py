@@ -4,16 +4,15 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from json2html import *
-
+from constants import *
 load_dotenv()
-
-SELECT_ALL_POSTS = "SELECT * FROM menu_item;"
-INSERT_MENUITEM_RETURN_ID = "INSERT INTO menu_item (name, description) VALUES (%s, %s) RETURNING id;"
 
 app = Flask(__name__)
 CORS(app)
 url = os.getenv("DATABASE_URL")
 connection = psycopg2.connect(url)
+
+'''Begin routes for HTML templates'''
 
 
 @app.route("/")
@@ -24,6 +23,9 @@ def home():
             menu_items = cursor.fetchall()
             cursor.close()
     return render_template("index.html", menu_items=menu_items)
+
+
+'''Begin API Functionality'''
 
 
 @app.route("/api/menuitems", methods=["POST"])
@@ -52,6 +54,15 @@ def get_all_users():
             else:
                 return jsonify({"error": f"Users not found."}), 404
 
+
+@app.route("/api/menuitems/<int:id>", methods=["DELETE"])
+def delete_menuitem(id):
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(DELETE_MENUITEM_BY_ID, (id,))
+            if cursor.rowcount == 0:
+                return jsonify({"error": f"menu item with ID {id} not found."}), 404
+        return jsonify({"message": f"menu item with ID {id} deleted."})
 
 
 if __name__ == "__main__":

@@ -1,3 +1,19 @@
-h1 {
+body {
     text-align: center;
+}
+
+ul {
+    list-style-type: none; /* Remove bullets */
+}
+
+nav * {
+  display: inline;
+}
+
+footer{
+  background-color: #EFA961;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  position: fixed;
 }
