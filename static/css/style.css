@@ -1,5 +1,9 @@
+
+
 body {
     text-align: center;
+    background-color:#F6F6D6;
+    font-family: 'Indie Flower', cursive;
 }
 
 ul {
@@ -21,9 +25,6 @@ header{
     background-color: #EF6261;
 }
 
-body{
-    background-color:#F6F6D6;
-}
 
 footer{
   background-color: #EFA961;
