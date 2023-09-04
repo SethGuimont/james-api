@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %} Home {% endblock %}
+{% block content %}
+
+
+<h2>Breakfast</h2>
+    {% for item in menu_items %}
+        <div class='menu_items'>
+            <h3>{{ item[1] }}</h3>
+            <p>{{ item [2] }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

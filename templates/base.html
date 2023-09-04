@@ -14,9 +14,18 @@
         <nav>
         <ul>
             <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('home') }}">About</a></li>
-            <li><a href="{{ url_for('home') }}">Location</a></li>
-            <li><a href="{{ url_for('home') }}">Partners</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('location') }}">Location</a></li>
+            <li><a href="{{ url_for('partners') }}">Partners</a></li>
+        </ul>
+    </nav>
+            <nav>
+        <ul>
+            <li><a href="{{ url_for('bakery') }}">Bakery</a></li>
+            <li><a href="{{ url_for('breakfast') }}">Breakfast</a></li>
+            <li><a href="{{ url_for('lunch') }}">Lunch</a></li>
+            <li><a href="{{ url_for('dinner') }}">Dinner</a></li>
+            <li><a href="{{ url_for('dessert') }}">Dessert</a></li>
         </ul>
     </nav>
 </header>
