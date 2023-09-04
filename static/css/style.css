@@ -10,6 +10,21 @@ nav * {
   display: inline;
 }
 
+nav[role="main"] {
+    background-color:#EFA961;;
+}
+nav[role="sub"] {
+    background-color:#61A7EF;
+}
+
+header{
+    background-color: #EF6261;
+}
+
+body{
+    background-color:#F6F6D6;
+}
+
 footer{
   background-color: #EFA961;
   left: 0;
