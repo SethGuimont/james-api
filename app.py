@@ -130,10 +130,14 @@ def delete_menuitem(id):
         return jsonify({"message": f"menu item with ID {id} deleted."})
 
 
-# Breakfast
+# 404 handler
 
+@app.errorhandler(404)
+# inbuilt function which takes error as parameter
+def not_found(e):
+    # defining function
+    return render_template("404.html")
 
-# Bakery
 
 if __name__ == "__main__":
     app.run()
