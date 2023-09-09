@@ -91,16 +91,16 @@ def dessert():
 '''Begin API Functionality'''
 
 
-#  Lunch and dinner
 @app.route("/api/menuitems", methods=["POST"])
 def create_menuitem():
     data = request.get_json()
     name = data["name"]
     description = data["description"]
     tag = data["tag"]
+    price = data["price"]
     with connection:
         with connection.cursor() as cursor:
-            cursor.execute(INSERT_MENUITEM_RETURN_ID, (name, description, tag))
+            cursor.execute(INSERT_MENUITEM_RETURN_ID, (name, description, tag, price))
             id = cursor.fetchone()[0]
     return {"id": id, "name": name, "message": f"menu item {name} created."}, 201
 
@@ -114,10 +114,23 @@ def get_all_users():
             if menu_items:
                 result = []
                 for item in menu_items:
-                    result.append({"id": item[0], "name": item[1], "description": item[2], "tag": item[3]})
+                    result.append({"id": item[0], "name": item[1], "description": item[2], "tag": item[3], "price": item[4]})
                 return jsonify(result)
             else:
                 return jsonify({"error": f"Users not found."}), 404
+
+
+@app.route("/api/menuitems/<int:id>", methods=["PUT"])
+def update_menuitem(id):
+    data = request.get_json()
+    price = data["price"]
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(UPDATE_MENUITEM_PRICE, (price, id))
+            if cursor.rowcount == 0:
+                return jsonify({"error": f"Menu item with ID {id} not found."}), 404
+            return jsonify({"id": id, "price": price, "message": f"Menu Item with ID {id} updated."})
+
 
 
 @app.route("/api/menuitems/<int:id>", methods=["DELETE"])
