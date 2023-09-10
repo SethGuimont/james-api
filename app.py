@@ -3,7 +3,6 @@ import psycopg2
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template, session, flash, redirect, abort
 from flask_cors import CORS
-from json2html import *
 from constants import *
 
 load_dotenv()
@@ -44,9 +43,9 @@ def bakery():
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_ALL_BAKERY)
-            bakery = cursor.fetchall()
+            menu_items = cursor.fetchall()
             cursor.close()
-    return render_template("bakery.html", menu_items=bakery)
+    return render_template("bakery.html", menu_items=menu_items)
 
 
 @app.route("/breakfast")
@@ -54,9 +53,9 @@ def breakfast():
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_ALL_BREAKFAST)
-            breakfast = cursor.fetchall()
+            menu_items = cursor.fetchall()
             cursor.close()
-    return render_template("breakfast.html", menu_items=breakfast)
+    return render_template("breakfast.html", menu_items=menu_items)
 
 
 @app.route("/lunch")
@@ -64,9 +63,9 @@ def lunch():
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_ALL_LUNCH)
-            lunch = cursor.fetchall()
+            menu_items = cursor.fetchall()
             cursor.close()
-    return render_template("lunch.html", menu_items=lunch)
+    return render_template("lunch.html", menu_items=menu_items)
 
 
 @app.route("/dinner")
@@ -74,9 +73,9 @@ def dinner():
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_ALL_DINNER)
-            dinner = cursor.fetchall()
+            menu_items = cursor.fetchall()
             cursor.close()
-    return render_template("dinner.html", menu_items=dinner)
+    return render_template("dinner.html", menu_items=menu_items)
 
 
 @app.route("/dessert")
@@ -84,11 +83,12 @@ def dessert():
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_ALL_DESSERT)
-            dessert = cursor.fetchall()
+            menu_items = cursor.fetchall()
             cursor.close()
-    return render_template("dessert.html", menu_items=dessert)
+    return render_template("dessert.html", menu_items=menu_items)
 
 
+# Admin Portal Pages and Login
 @app.route('/login', methods=['POST'])
 def do_admin_login():
     if request.form['password'] == 'password' and request.form['username'] == 'admin':
