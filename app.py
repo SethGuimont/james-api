@@ -1,7 +1,7 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session, flash, redirect, abort
 from flask_cors import CORS
 from json2html import *
 from constants import *
@@ -9,6 +9,7 @@ from constants import *
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.urandom(12)
 CORS(app)
 url = os.getenv("DATABASE_URL")
 connection = psycopg2.connect(url)
@@ -88,6 +89,29 @@ def dessert():
     return render_template("dessert.html", menu_items=dessert)
 
 
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+    if request.form['password'] == 'password' and request.form['username'] == 'admin':
+        session['logged_in'] = True
+    else:
+        flash('wrong password!')
+    return employee()
+
+
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return employee()
+
+
+@app.route("/employee")
+def employee():
+    if not session.get('logged_in'):
+        return render_template("login.html")
+    else:
+        return render_template("employee.html")
+
+
 '''Begin API Functionality'''
 
 
@@ -114,7 +138,8 @@ def get_all_users():
             if menu_items:
                 result = []
                 for item in menu_items:
-                    result.append({"id": item[0], "name": item[1], "description": item[2], "tag": item[3], "price": item[4]})
+                    result.append(
+                        {"id": item[0], "name": item[1], "description": item[2], "tag": item[3], "price": item[4]})
                 return jsonify(result)
             else:
                 return jsonify({"error": f"Users not found."}), 404
@@ -130,7 +155,6 @@ def update_menuitem(id):
             if cursor.rowcount == 0:
                 return jsonify({"error": f"Menu item with ID {id} not found."}), 404
             return jsonify({"id": id, "price": price, "message": f"Menu Item with ID {id} updated."})
-
 
 
 @app.route("/api/menuitems/<int:id>", methods=["DELETE"])
