@@ -51,3 +51,4 @@ docs/_build/
 
 #pychanm specific idea
 .idea/
+/tests/.pytest_cache/
