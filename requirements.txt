@@ -6,3 +6,4 @@ json2html
 gunicorn
 pytest
 pytest-cov
+requests

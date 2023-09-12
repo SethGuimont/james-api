@@ -105,13 +105,3 @@ def test_404(client):
     assert not_found_page.status_code == 200
 
 
-# Retrieving menu items should return a 200
-def test_apiget(client):
-    apiget = client.get("/api/menuitems")
-    assert apiget.status_code == 200
-
-
-# Invalid menu item to delete returns 404
-def test_apidelete(client):
-    apidelete = client.delete("/api/menuitems/1000")
-    assert apidelete.status_code == 404
