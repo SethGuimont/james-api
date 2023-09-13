@@ -1,5 +1,5 @@
+import json
 import pytest
-import requests
 from app import *
 
 
@@ -25,17 +25,31 @@ def test_apiget(client):
 
 
 # Invalid menu item to delete returns 404
-def test_api_delete(client):
+def test_api_delete_fail(client):
     api_delete = client.delete("/api/menuitems/1000")
     assert api_delete.status_code == 404
 
 
-# Fix later
-def test_create_new_user():
-    put_url = "https://fluffy-cat-bb1787883c94.herokuapp.com/api/menuitems/13"
+# Put request returns 200
+def test_api_put(client):
+    put_url = "api/menuitems/13"
     data = {
         "price": "$1.00"
     }
 
-    response = requests.put(put_url, data=data)
-    assert response.status_code == 415
+    put_url = client.put(put_url, data=json.dumps(data), content_type='application/json')
+    assert put_url.status_code == 200
+
+
+# Post request returns 201
+def test_api_create(client):
+    create_url = "/api/menuitems"
+    data = {
+        "name": "test",
+        "description": "description test",
+        "tag": "test tag",
+        "price": "$1.00"
+    }
+
+    put_url = client.post(create_url, data=json.dumps(data), content_type='application/json')
+    assert put_url.status_code == 201
