@@ -31,10 +31,10 @@ def test_api_delete_fail(client):
 
 
 # Put request returns 200
-def test_api_put(client):
-    put_url = "api/menuitems/13"
+def test_api_put_price(client):
+    put_url = "api/menuitems/11"
     data = {
-        "price": "$1.00"
+        "price": "$0.01"
     }
 
     put_url = client.put(put_url, data=json.dumps(data), content_type='application/json')

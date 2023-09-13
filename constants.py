@@ -7,3 +7,4 @@ SELECT_ALL_DESSERT = "SELECT * FROM menu_item WHERE tag = 'Dessert'"
 INSERT_MENUITEM_RETURN_ID = "INSERT INTO menu_item (name, description, tag, price) VALUES (%s, %s, %s, %s) RETURNING id"
 DELETE_MENUITEM_BY_ID = "DELETE FROM menu_item WHERE id = (%s)"
 UPDATE_MENUITEM_PRICE = "UPDATE menu_item SET price = (%s) WHERE id = (%s)"
+

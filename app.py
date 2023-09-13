@@ -146,7 +146,7 @@ def get_all_users():
 
 
 @app.route("/api/menuitems/<int:id>", methods=["PUT"])
-def update_menuitem(id):
+def update_menuitem_price(id):
     data = request.get_json()
     price = data["price"]
     with connection:
@@ -155,6 +155,7 @@ def update_menuitem(id):
             if cursor.rowcount == 0:
                 return jsonify({"error": f"Menu item with ID {id} not found."}), 404
             return jsonify({"id": id, "price": price, "message": f"Menu Item with ID {id} updated."})
+
 
 
 @app.route("/api/menuitems/<int:id>", methods=["DELETE"])
