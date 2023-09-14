@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template, session, flash, redirect, abort
 from flask_cors import CORS
 from constants import *
+import stripe
 
 load_dotenv()
 
@@ -12,6 +13,9 @@ app.secret_key = os.urandom(12)
 CORS(app)
 url = os.getenv("DATABASE_URL")
 connection = psycopg2.connect(url)
+
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+stripe_pup = os.getenv("STRIPE_PUP_KEY")
 
 '''Begin routes for HTML templates'''
 
@@ -112,6 +116,62 @@ def employee():
         return render_template("employee.html")
 
 
+# payment page
+@app.route("/payment")
+def payment():
+    return render_template("payment.html")
+
+
+@app.route("/success")
+def success():
+    return render_template("success.html")
+
+
+@app.route("/cancelled")
+def cancelled():
+    return render_template("cancelled.html")
+
+
+@app.route("/config")
+def get_publishable_key():
+    stripe_config = {"publicKey": stripe_pup}
+    return jsonify(stripe_config)
+
+
+@app.route("/create-checkout-session")
+def create_checkout_session():
+    domain_url = "http://127.0.0.1:5000/"
+    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+    try:
+        # Create new Checkout Session for the order
+        # Other optional params include:
+        # [billing_address_collection] - to display billing address details on the page
+        # [customer] - if you have an existing Stripe Customer ID
+        # [payment_intent_data] - capture the payment later
+        # [customer_email] - prefill the email input in the form
+        # For full details see https://stripe.com/docs/api/checkout/sessions/create
+
+        # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
+        checkout_session = stripe.checkout.Session.create(
+            success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=domain_url + "cancelled",
+            payment_method_types=["card"],
+            mode="payment",
+            line_items=[
+                {
+                    "name": "T-shirt",
+                    "quantity": 1,
+                    "currency": "usd",
+                    "amount": "2000",
+                }
+            ]
+        )
+        return jsonify({"sessionId": checkout_session["id"]})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+
+
 '''Begin API Functionality'''
 
 
@@ -157,7 +217,6 @@ def update_menuitem_price(id):
             return jsonify({"id": id, "price": price, "message": f"Menu Item with ID {id} updated."})
 
 
-
 @app.route("/api/menuitems/<int:id>", methods=["DELETE"])
 def delete_menuitem(id):
     with connection:
@@ -175,6 +234,9 @@ def delete_menuitem(id):
 def not_found(e):
     # defining function
     return render_template("404.html")
+
+
+# Payment handler
 
 
 if __name__ == "__main__":

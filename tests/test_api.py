@@ -32,7 +32,7 @@ def test_api_delete_fail(client):
 
 # Put request returns 200
 def test_api_put_price(client):
-    put_url = "api/menuitems/11"
+    put_url = "api/menuitems/9"
     data = {
         "price": "$0.01"
     }
