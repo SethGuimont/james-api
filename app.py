@@ -17,6 +17,8 @@ connection = psycopg2.connect(url)
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 stripe_pup = os.getenv("STRIPE_PUP_KEY")
 
+YOUR_DOMAIN = 'http://127.0.0.1:5000'
+
 '''Begin routes for HTML templates'''
 
 
@@ -116,7 +118,7 @@ def employee():
         return render_template("employee.html")
 
 
-# payment page
+# payment handler
 @app.route("/payment")
 def payment():
     return render_template("payment.html")
@@ -132,44 +134,24 @@ def cancelled():
     return render_template("cancelled.html")
 
 
-@app.route("/config")
-def get_publishable_key():
-    stripe_config = {"publicKey": stripe_pup}
-    return jsonify(stripe_config)
-
-
-@app.route("/create-checkout-session")
+@app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
-    domain_url = "http://127.0.0.1:5000/"
-    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-
     try:
-        # Create new Checkout Session for the order
-        # Other optional params include:
-        # [billing_address_collection] - to display billing address details on the page
-        # [customer] - if you have an existing Stripe Customer ID
-        # [payment_intent_data] - capture the payment later
-        # [customer_email] - prefill the email input in the form
-        # For full details see https://stripe.com/docs/api/checkout/sessions/create
-
-        # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
         checkout_session = stripe.checkout.Session.create(
-            success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=domain_url + "cancelled",
-            payment_method_types=["card"],
-            mode="payment",
             line_items=[
                 {
-                    "name": "T-shirt",
-                    "quantity": 1,
-                    "currency": "usd",
-                    "amount": "2000",
-                }
-            ]
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': 'price_1Nqi1mD2IPz5VDJsARJppQP7',
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/success',
+            cancel_url=YOUR_DOMAIN + '/cancelled',
         )
-        return jsonify({"sessionId": checkout_session["id"]})
     except Exception as e:
-        return jsonify(error=str(e)), 403
+        return str(e)
+    return redirect(checkout_session.url, code=303)
 
 
 '''Begin API Functionality'''
